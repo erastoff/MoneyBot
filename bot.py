@@ -50,6 +50,7 @@ async def set_bot_commands_menu(my_bot: Bot) -> None:
     # Register commands for Telegram bot (menu)
     commands = [
         BotCommand(command="/id", description="👋 Get my ID"),
+        BotCommand(command="/calc", description="💵 Calculate my assets"),
     ]
     try:
         await my_bot.set_my_commands(commands)
