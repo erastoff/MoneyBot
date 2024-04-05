@@ -17,11 +17,16 @@ class Settings(BaseSettings):
     debug: bool = config("DEBUG")
     redis_url: str = f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT')}/0"
     bot_token: str = config("HTTP_API")
-    base_webhook_url: str = "https://0598cb9f3c267b.lhr.life"
-    webhook_path: str = "/"
+    base_webhook_url: str = "https://c111b043a4fb32.lhr.life"
+    webhook_path: str = "/path/"
     telegram_my_token: str = (
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # Additional security token for webhook
     )
+    db_name: str = config("DATABASE_NAME")
+    db_user: str = config("DATABASE_USER")
+    db_password: str = config("DATABASE_PASSWORD")
+    db_host: str = config("DATABASE_HOST")
+    db_port: int = config("DATABASE_PORT")
 
 
 @lru_cache()  # get it from memory
