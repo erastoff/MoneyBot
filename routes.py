@@ -3,11 +3,15 @@ __author__ = "erastoff (yury.erastov@gmail.com)"
 
 from typing import Annotated
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, Depends
 from loguru import logger
 from aiogram import types
+from sqlalchemy.orm import Session
+from starlette.exceptions import HTTPException
 
 from bot import bot, dp
+from orm import crud
+from orm.database import get_session
 from settings import get_settings
 
 cfg = get_settings()
@@ -22,6 +26,14 @@ root_router = APIRouter(
 @root_router.get("/")
 async def root() -> dict:
     return {"message": "Hello World"}
+
+
+@root_router.get("/users/{user_id}")
+async def read_user(user_id: int, db: Session = Depends(get_session)):
+    db_user = await crud.Users.get_user(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
 
 
 @root_router.post(cfg.webhook_path)
