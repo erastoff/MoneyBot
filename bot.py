@@ -3,12 +3,11 @@ __author__ = "erastoff (yury.erastov@gmail.com)"
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
-from aiogram.types import WebhookInfo, BotCommand
-
+from aiogram.types import BotCommand, WebhookInfo
 from loguru import logger
 
+from settings import Settings, get_settings
 from system import first_run
-from settings import get_settings, Settings
 
 cfg: Settings = get_settings()
 

@@ -15,6 +15,3 @@ Setup you own environment variables in settings.py file or in `[prod|dev].env` f
 
 
 
-redis-server
-ssh -R 80:localhost:8000 nokey@localhost.run
-change base_webhook_url

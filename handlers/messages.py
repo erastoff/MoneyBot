@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 __author__ = "erastoff (yury.erastov@gmail.com)"
 
-from fastapi import Depends
-from loguru import logger
-from aiogram import types
-from aiogram import F
-from aiogram.filters import CommandStart, Command
-from aiogram.utils.markdown import hbold
+from aiogram import F, types
+from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
-from sqlalchemy.ext.asyncio import AsyncSession
+from aiogram.utils.markdown import hbold
+from loguru import logger
 
 from bot import telegram_router
 from orm import crud
 from orm.database import get_session
-from routes import root, read_user
+from routes import root
 
 
 @telegram_router.message(Command("id"))

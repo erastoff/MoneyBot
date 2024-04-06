@@ -3,9 +3,9 @@ __author__ = "erastoff (yury.erastov@gmail.com)"
 
 from typing import Annotated
 
-from fastapi import APIRouter, Header, Depends
-from loguru import logger
 from aiogram import types
+from fastapi import APIRouter, Depends, Header
+from loguru import logger
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 

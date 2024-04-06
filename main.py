@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 __author__ = "erastoff (yury.erastov@gmail.com)"
 
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from loguru import logger
 
 import handlers  # noqa, get handlers for Telegram

@@ -2,9 +2,10 @@
 __author__ = "erastoff (yury.erastov@gmail.com)"
 
 from functools import lru_cache
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import final
+
 from decouple import config
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 @final
