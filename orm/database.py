@@ -8,7 +8,7 @@ from settings import get_settings
 
 cfg = get_settings()
 
-SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{cfg.db_user}:{cfg.db_password}@{cfg.db_host}:{cfg.db_port}/{cfg.db_name}"
+SQLALCHEMY_DATABASE_URL = cfg.db_uri
 
 async_engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL,

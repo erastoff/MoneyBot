@@ -22,7 +22,7 @@ async def cmd_id(message: Message) -> None:
 
 
 @telegram_router.message(Command("calc"))
-async def cmd_id(message: Message) -> None:
+async def calc_assets(message: Message) -> None:
     await message.answer(
         f"We are ready to create assets calculation for user {message.from_user.id}"
     )

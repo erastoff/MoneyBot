@@ -14,7 +14,9 @@ from settings import get_settings
 # access to the values within the .ini file in use.
 config = context.config
 cfg = get_settings()
-SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{cfg.db_user}:{cfg.db_password}@{cfg.db_host}:{cfg.db_port}/{cfg.db_name}"
+
+# DB URI
+SQLALCHEMY_DATABASE_URL = cfg.db_uri
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

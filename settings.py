@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     db_password: str = config("DATABASE_PASSWORD")
     db_host: str = config("DATABASE_HOST")
     db_port: int = config("DATABASE_PORT")
+    db_uri: str = (
+        f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+    )
 
 
 @lru_cache()  # get it from memory
