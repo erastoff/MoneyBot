@@ -8,7 +8,7 @@ from aiogram.utils.markdown import hbold
 from loguru import logger
 
 from bot import telegram_router
-from orm import crud
+from orm import crud, schemas
 from orm.database import get_session
 from routes import root
 
@@ -27,6 +27,13 @@ async def calc_assets(message: Message) -> None:
 
 @telegram_router.message(CommandStart())
 async def cmd_start(message: Message) -> None:
+    async with get_session() as session:
+        new_user = schemas.User(
+            id=message.from_user.id, name=message.from_user.full_name
+        )
+        db_user = await crud.Users.get_user(session, user_id=new_user.id)
+        if db_user is None:
+            await crud.Users.create_user(session, new_user)
     await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
 
 
@@ -54,11 +61,20 @@ async def ping(message: types.Message) -> None:
 async def hello_fastapi(message: types.Message) -> None:
     try:
         response_dict = await root()
-
-        async with get_session() as session:
-            db_user = await crud.Users.get_user(session, user_id=message.from_user.id)
-        print(db_user.name)
         res = response_dict["message"]
+
+        # TEST GET USER
+        # async with get_session() as session:
+        #     db_user = await crud.Users.get_user(session, user_id=message.from_user.id)
+        # print(db_user.name)
+
+        # TEST CREATE USER
+        async with get_session() as session:
+            new_user = schemas.User(id=30000000, name="Create Test 2")
+            db_user = await crud.Users.get_user(session, user_id=new_user.id)
+            if db_user is None:
+                db_user = await crud.Users.create_user(session, new_user)
+
         await message.answer(res)
         await message.answer(
             f"Additionally, I get your username from DB: {db_user.name}"

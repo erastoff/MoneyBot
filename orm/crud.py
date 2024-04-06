@@ -16,9 +16,10 @@ class Users:
             return user
 
     @staticmethod
-    def create_user(db: Session, user: schemas.User):
-        db_user = models.User(id=user.id, username=user.username)
-        db.add(db_user)
-        db.commit()
-        db.refresh(db_user)
-        return db_user
+    async def create_user(db: AsyncSession, user: schemas.User):
+        async with db as session:
+            db_user = models.User(id=user.id, name=user.name)
+            session.add(db_user)
+            await session.commit()
+            await session.refresh(db_user)
+            return db_user
