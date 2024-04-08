@@ -1,4 +1,15 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, BigInteger
+import datetime
+
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    func,
+)
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -9,16 +20,30 @@ class User(Base):
 
     id = Column(BigInteger, primary_key=True, index=True)
     name = Column(String, unique=False)
-    # email = Column(String, unique=True, index=True)
-    # items = relationship("Item", back_populates="owner")
+
+    calculations = relationship("Calculation", back_populates="owner")
 
 
-# class Calculation(Base):
-#     __tablename__ = "items"
-#
-#     id = Column(Integer, primary_key=True, index=True)
-#     title = Column(String, index=True)
-#     description = Column(String, index=True)
-#     owner_id = Column(Integer, ForeignKey("users.id"))
-#
-#     owner = relationship("User", back_populates="calculation")
+class Calculation(Base):
+    __tablename__ = "calculations"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    date = Column(DateTime, server_default=func.now())
+    base_currency = Column(String(5))
+    total = Column(Numeric(precision=10, scale=6))
+
+    owner_id = Column(BigInteger, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="calculations")
+
+    assets = relationship("Asset", back_populates="calculation")
+
+
+class Asset(Base):
+    __tablename__ = "assets"
+
+    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    currency = Column(String(5))
+    sum = Column(Numeric(precision=10, scale=6))
+
+    calc_id = Column(Integer, ForeignKey("calculations.id"))
+    calculation = relationship("Calculation", back_populates="assets")
