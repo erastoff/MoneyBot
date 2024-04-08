@@ -62,6 +62,7 @@ async def hello_fastapi(message: types.Message) -> None:
     try:
         response_dict = await root()
         res = response_dict["message"]
+        await message.answer(res)
 
         # TEST GET USER
         # async with get_session() as session:
@@ -69,16 +70,34 @@ async def hello_fastapi(message: types.Message) -> None:
         # print(db_user.name)
 
         # TEST CREATE USER
+        # async with get_session() as session:
+        #     new_user = schemas.User(id=30000000, name="Create Test 2")
+        #     db_user = await crud.Users.get_user(session, user_id=new_user.id)
+        #     if db_user is None:
+        #         db_user = await crud.Users.create_user(session, new_user)
+        # await message.answer(
+        #     f"Additionally, I get your username from DB: {db_user.name}"
+        # )
+        #
+        # TEST CREATE CALCULATION
         async with get_session() as session:
-            new_user = schemas.User(id=30000000, name="Create Test 2")
-            db_user = await crud.Users.get_user(session, user_id=new_user.id)
-            if db_user is None:
-                db_user = await crud.Users.create_user(session, new_user)
+            new_calc = schemas.Calculation(
+                base_currency="AED", owner_id=message.from_user.id
+            )
+            db_calc = await crud.Calculations.create_calculation(session, new_calc)
+            await message.answer(
+                f"Additionally, I create new calculation in DB: {db_calc.id}, {db_calc.base_currency} from user {db_calc.owner_id}"
+            )
+        # TEST CREATE ASSET
+        async with get_session() as session:
+            new_asset = schemas.Asset(
+                currency="CYN", sum=999.99997876543221, calc_id=db_calc.id
+            )
+            db_asset = await crud.Assets.create_asset(session, new_asset)
+            await message.answer(
+                f"Additionally, I create new asset in DB: {db_asset.id}, {db_asset.currency} from calc_id {db_asset.calc_id}"
+            )
 
-        await message.answer(res)
-        await message.answer(
-            f"Additionally, I get your username from DB: {db_user.name}"
-        )
     except Exception as e:
         print(e)
         logger.error(f"Can't send message - {e}")
