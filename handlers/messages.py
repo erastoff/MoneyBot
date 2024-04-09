@@ -78,25 +78,45 @@ async def hello_fastapi(message: types.Message) -> None:
         # await message.answer(
         #     f"Additionally, I get your username from DB: {db_user.name}"
         # )
-        #
+
         # TEST CREATE CALCULATION
-        async with get_session() as session:
-            new_calc = schemas.Calculation(
-                base_currency="AED", owner_id=message.from_user.id
-            )
-            db_calc = await crud.Calculations.create_calculation(session, new_calc)
-            await message.answer(
-                f"Additionally, I create new calculation in DB: {db_calc.id}, {db_calc.base_currency} from user {db_calc.owner_id}"
-            )
-        # TEST CREATE ASSET
-        async with get_session() as session:
-            new_asset = schemas.Asset(
-                currency="CYN", sum=999.99997876543221, calc_id=db_calc.id
-            )
-            db_asset = await crud.Assets.create_asset(session, new_asset)
-            await message.answer(
-                f"Additionally, I create new asset in DB: {db_asset.id}, {db_asset.currency} from calc_id {db_asset.calc_id}"
-            )
+        # async with get_session() as session:
+        #     new_calc = schemas.Calculation(
+        #         base_currency="AED", owner_id=message.from_user.id
+        #     )
+        #     db_calc = await crud.Calculations.create_calculation(session, new_calc)
+        #     await message.answer(
+        #         f"Additionally, I create new calculation in DB: {db_calc.id}, {db_calc.base_currency} from user {db_calc.owner_id}"
+        #     )
+
+        # # TEST CREATE ASSET
+        # async with get_session() as session:
+        #     new_asset = schemas.Asset(
+        #         currency="CYN", sum=999.99997876543221, calc_id=db_calc.id
+        #     )
+        #     db_asset = await crud.Assets.create_asset(session, new_asset)
+        #     await message.answer(
+        #         f"Additionally, I create new asset in DB: {db_asset.id}, {db_asset.currency} from calc_id {db_asset.calc_id}"
+        #     )
+
+        # TEST GET CALCULATION LIST
+        # async with get_session() as session:
+        #     db_calc = await crud.Calculations.get_calculation_list(
+        #         session, owner_id=message.from_user.id
+        #     )
+        # for item in db_calc:
+        #     await message.answer(f"Calculation id{item.id}: {item.base_currency}")
+
+        # TEST GET ASSETS LIST
+        # async with get_session() as session:
+        #     db_asset = await crud.Assets.get_assets_list(session, calc_id=1)
+        # for item in db_asset:
+        #     await message.answer(f"Asset id{item.id}: {item.currency}")
+
+        # TEST DELETE ASSETS
+        # async with get_session() as session:
+        #     await crud.Assets.delete_asset(session, asset_id=8)
+        # await message.answer(f"Asset deleted id8")
 
     except Exception as e:
         print(e)

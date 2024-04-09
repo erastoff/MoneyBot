@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import models, schemas
@@ -43,16 +43,17 @@ class Calculations:
             await session.refresh(db_calculation)
             return db_calculation
 
-    # @staticmethod
-    # async def get_calculation_list(db: AsyncSession, owner_id: int):
-    #     async with db as session:
-    #         result = await session.execute(
-    #             select(models.Calculation).filter(
-    #                 models.Calculation.owner_id == owner_id
-    #             )
-    #         )
-    #         calculations = result.scalars()
-    #         return calculations
+    @staticmethod
+    async def get_calculation_list(db: AsyncSession, owner_id: int):
+        async with db as session:
+            result = await session.execute(
+                select(models.Calculation)
+                .filter(models.Calculation.owner_id == owner_id)
+                .order_by(desc(models.Calculation.date))
+                .limit(5)
+            )
+            calculations = result.scalars()
+            return calculations
 
     @staticmethod
     async def update_calculation():
@@ -80,9 +81,22 @@ class Assets:
         pass
 
     @staticmethod
-    async def get_asset():
-        pass
+    async def get_assets_list(db: AsyncSession, calc_id: int):
+        async with db as session:
+            result = await session.execute(
+                select(models.Asset)
+                .filter(models.Asset.calc_id == calc_id)
+                .order_by(models.Asset.id)
+            )
+            assets = result.scalars()
+            return assets
 
     @staticmethod
-    async def delete_asset():
-        pass
+    async def delete_asset(db: AsyncSession, asset_id: int):
+        async with db as session:
+            try:
+                asset = await session.get(models.Asset, asset_id)
+                await db.delete(asset)
+                await db.commit()
+            except:
+                print("Doesn't exist")  # ??????????????????????????
