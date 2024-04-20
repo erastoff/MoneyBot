@@ -2,8 +2,10 @@
 __author__ = "erastoff (yury.erastov@gmail.com)"
 
 from aiogram import F, types
+from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils import markdown
 from aiogram.utils.markdown import hbold
 from loguru import logger
 
@@ -11,6 +13,14 @@ from bot import telegram_router
 from orm import crud, schemas
 from orm.database import get_session
 from routes import root
+
+
+from keyboards.common_keyboards import (
+    ButtonText,
+    get_on_start_kb,
+    get_on_help_kb,
+    get_actions_kb,
+)
 
 
 @telegram_router.message(Command("id"))
@@ -122,3 +132,55 @@ async def hello_fastapi(message: types.Message) -> None:
         print(e)
         logger.error(f"Can't send message - {e}")
         await message.answer("Nice try! But something went wrong...")
+
+
+@telegram_router.message(Command("info", prefix="!/"))
+async def handle_info_command(message: types.Message):
+    tg_channel_btn = InlineKeyboardButton(
+        text="🔉Channel", url="https://t.me/erast_off"
+    )
+    git_btn = InlineKeyboardButton(text="🔉GitHub", url="https://github.com/erastoff")
+    vk_btn = InlineKeyboardButton(text="🔉VK", url="https://vk.com")
+    row1 = [tg_channel_btn]
+    row2 = [git_btn, vk_btn]
+    rows = [row1, row2]
+    markup = InlineKeyboardMarkup(inline_keyboard=rows)
+    await message.answer(text="Links to resources:", reply_markup=markup)
+
+
+@telegram_router.message(F.text == ButtonText.WHATS_NEXT)
+@telegram_router.message(Command("help", prefix="!/"))
+async def handle_help(message: types.Message):
+    text = markdown.text(
+        markdown.markdown_decoration.quote("I'm an {echo} bot."),
+        markdown.text(
+            "Send me",
+            markdown.markdown_decoration.bold(
+                markdown.text(
+                    markdown.underline("literally"),
+                    "any",
+                ),
+            ),
+            markdown.markdown_decoration.quote("message!"),
+        ),
+        sep="\n",
+    )
+    await message.answer(
+        text=text,
+        parse_mode=ParseMode.MARKDOWN_V2,
+        reply_markup=get_on_help_kb(),
+    )
+
+
+@telegram_router.message(Command("more", prefix="!/"))
+async def handle_more(message: types.Message):
+    markup = get_actions_kb()
+    await message.answer(
+        text="Choose action:",
+        reply_markup=markup,
+    )
+
+
+@dp.message_handler(text="Button 1")
+async def process_btn1(message: types.Message):
+    await message.answer("You pressed Button 1", reply_markup=ReplyKeyboardRemove())
