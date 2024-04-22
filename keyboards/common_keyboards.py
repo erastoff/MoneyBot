@@ -1,9 +1,17 @@
+from aiogram import F
 from aiogram.types import (
     KeyboardButton,
     ReplyKeyboardMarkup,
     KeyboardButtonPollType,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
+
+
+class CommonKB:
+    exchange_kb_data = "Get exchange rates"
+    calculation_kb_data = "Make calculation"
 
 
 class ButtonText:
@@ -13,15 +21,11 @@ class ButtonText:
 
 
 def get_on_start_kb() -> ReplyKeyboardMarkup:
-    button_hello = KeyboardButton(text=ButtonText.HELLO)
-    button_help = KeyboardButton(text=ButtonText.WHATS_NEXT)
-    button_bye = KeyboardButton(text=ButtonText.BYE)
-    buttons_first_row = [button_hello, button_help]
-    buttons_second_row = [button_bye]
+    row1 = [KeyboardButton(text=CommonKB.exchange_kb_data)]
+    row2 = [KeyboardButton(text=CommonKB.calculation_kb_data)]
+    buttons_rows = [row1, row2]
     markup = ReplyKeyboardMarkup(
-        keyboard=[buttons_first_row, buttons_second_row],
-        resize_keyboard=True,
-        # one_time_keyboard=True,
+        keyboard=buttons_rows, resize_keyboard=True, one_time_keyboard=True
     )
     return markup
 
