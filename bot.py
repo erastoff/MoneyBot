@@ -14,7 +14,6 @@ cfg: Settings = get_settings()
 telegram_router = Router(name="telegram")
 dp = Dispatcher()
 
-
 dp.include_router(telegram_router)
 bot = Bot(token=cfg.bot_token, parse_mode=ParseMode.HTML)
 
@@ -48,6 +47,7 @@ async def set_webhook(my_bot: Bot) -> None:
 async def set_bot_commands_menu(my_bot: Bot) -> None:
     # Register commands for Telegram bot (menu)
     commands = [
+        BotCommand(command="/start", description="▶️ Start menu"),
         BotCommand(command="/id", description="👋 Get my ID"),
         BotCommand(command="/calc", description="💵 Calculate my assets"),
         BotCommand(command="/fastapi", description="🛠 DEBUG feature"),

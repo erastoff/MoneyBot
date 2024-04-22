@@ -4,12 +4,19 @@ __author__ = "erastoff (yury.erastov@gmail.com)"
 from aiogram import F, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.fsm.context import FSMContext
+from aiogram.types import (
+    Message,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    CallbackQuery,
+)
 from aiogram.utils import markdown
 from aiogram.utils.markdown import hbold
 from loguru import logger
 
-from bot import telegram_router
+from bot import telegram_router, bot
+from handlers.states import Calculation
 from orm import crud, schemas
 from orm.database import get_session
 from routes import root
@@ -17,9 +24,9 @@ from routes import root
 
 from keyboards.common_keyboards import (
     ButtonText,
-    get_on_start_kb,
     get_on_help_kb,
     get_actions_kb,
+    get_on_start_kb,
 )
 
 
@@ -36,7 +43,7 @@ async def calc_assets(message: Message) -> None:
 
 
 @telegram_router.message(CommandStart())
-async def cmd_start(message: Message) -> None:
+async def cmd_start(message: Message, state: FSMContext) -> None:
     async with get_session() as session:
         new_user = schemas.User(
             id=message.from_user.id, name=message.from_user.full_name
@@ -44,7 +51,13 @@ async def cmd_start(message: Message) -> None:
         db_user = await crud.Users.get_user(session, user_id=new_user.id)
         if db_user is None:
             await crud.Users.create_user(session, new_user)
+    # await state.set_state(Calculation.rates_or_calculation)
     await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
+    await message.answer(
+        """In the MoneyBot you can get current exchange rate and evaluate your multicurrency assets. Push the appropriate button below. 👇"""
+    )
+    markup = get_on_start_kb()
+    await message.answer(text="Choose action:", reply_markup=markup)
 
 
 @telegram_router.message(F.text.lower() == "echo")
@@ -181,6 +194,20 @@ async def handle_more(message: types.Message):
     )
 
 
-@dp.message_handler(text="Button 1")
-async def process_btn1(message: types.Message):
-    await message.answer("You pressed Button 1", reply_markup=ReplyKeyboardRemove())
+# @telegram_router.callback_query(F.data == CallBacks.exchange_cb_data)
+# async def exchange_cb_handle(callback_query: CallbackQuery):
+#     # if callback_query.data == CallBacks.exchange_cb_data:
+#     print(CallBacks.exchange_cb_data)
+#     await callback_query.answer()
+#     # await callback_query.answer(text="/fastapi")
+#     await bot.send_message(callback_query.from_user.id, "/fastapi")
+#     # elif callback_query.data == CallBacks.calculation_cb_data:
+#     #     await callback_query.message.answer("/choose_currency")
+#
+#
+# @telegram_router.callback_query(F.data == CallBacks.calculation_cb_data)
+# async def calculation_cb_handle(callback_query: CallbackQuery):
+#     print(CallBacks.calculation_cb_data)
+#     await callback_query.answer()
+#     # await callback_query.answer(text="/choose_currency")
+#     await bot.send_message(callback_query.from_user.id, "/choose_currency")

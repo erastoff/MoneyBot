@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     debug: bool = config("DEBUG")
     redis_url: str = f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT')}/0"
     bot_token: str = config("HTTP_API")
-    base_webhook_url: str = "https://c111b043a4fb32.lhr.life"
+    base_webhook_url: str = "https://0cd28175ccf6fb.lhr.life"
     webhook_path: str = "/path/"
     telegram_my_token: str = (
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # Additional security token for webhook
