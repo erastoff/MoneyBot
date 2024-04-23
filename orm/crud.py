@@ -56,11 +56,27 @@ class Calculations:
             return calculations
 
     @staticmethod
+    async def get_last_user_calculation(db: AsyncSession, owner_id: int):
+        async with db as session:
+            result = await session.execute(
+                select(models.Calculation)
+                .filter(models.Calculation.owner_id == owner_id)
+                .order_by(desc(models.Calculation.date))
+                .limit(1)
+            )
+            calculation = result.scalars().first()
+            return calculation
+
+    @staticmethod
     async def update_calculation():
         pass
 
     @staticmethod
     async def delete_calculation():
+        pass
+
+    @staticmethod
+    async def set_total(db: AsyncSession, owner_id: int):
         pass
 
 
