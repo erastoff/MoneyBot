@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from loguru import logger
 
-import handlers  # noqa, get handlers for Telegram
+# import handlers  # noqa, get handlers for Telegram
 from routes import root_router
 from settings import get_settings
 

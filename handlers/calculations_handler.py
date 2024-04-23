@@ -1,10 +1,10 @@
-from aiogram import types, F
+from aiogram import types, F, Router
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.utils import markdown
 
-from bot import telegram_router
+# from bot import telegram_router
 from keyboards.calculation_keyboards import (
     crypto_or_currency,
     cash_kb,
@@ -18,8 +18,10 @@ from orm.database import get_session
 
 from .states import Calculation
 
+router = Router(name=__name__)
 
-@telegram_router.message(F.text == CommonKB.calculation_kb_data)
+
+@router.message(F.text == CommonKB.calculation_kb_data)
 async def choose_crypto_or_cash(message: types.Message, state: FSMContext):
     await state.update_data(rates_or_calculation=message.text)
     markup = crypto_or_currency()
@@ -30,7 +32,7 @@ async def choose_crypto_or_cash(message: types.Message, state: FSMContext):
     await state.clear()
 
 
-@telegram_router.message(F.text == CalculationKB.crypto_kb_data)
+@router.message(F.text == CalculationKB.crypto_kb_data)
 async def crypto_assets(message: types.Message, state: FSMContext):
     await state.set_state(Calculation.base_currency)
     markup = crypto_kb()
@@ -40,7 +42,7 @@ async def crypto_assets(message: types.Message, state: FSMContext):
     )
 
 
-@telegram_router.message(F.text == CalculationKB.cash_kb_data)
+@router.message(F.text == CalculationKB.cash_kb_data)
 async def cash_assets(message: types.Message, state: FSMContext):
     await state.set_state(Calculation.base_currency)
     markup = cash_kb()
@@ -50,7 +52,7 @@ async def cash_assets(message: types.Message, state: FSMContext):
     )
 
 
-@telegram_router.message(Calculation.base_currency)
+@router.message(Calculation.base_currency)
 async def handle_calculation_base_currency(message: types.Message, state: FSMContext):
     await state.update_data(base_currency=message.text)
     # await state.set_state(Calculation.base_currency)

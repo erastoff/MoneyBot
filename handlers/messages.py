@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = "erastoff (yury.erastov@gmail.com)"
 
-from aiogram import F, types
+from aiogram import F, types, Router
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
@@ -15,11 +15,13 @@ from aiogram.utils import markdown
 from aiogram.utils.markdown import hbold
 from loguru import logger
 
-from bot import telegram_router, bot
+# from bot import telegram_router, bot
+# from bot import bot
 from handlers.states import Calculation
 from orm import crud, schemas
 from orm.database import get_session
-from routes import root
+
+# from routes import root
 
 
 from keyboards.common_keyboards import (
@@ -29,20 +31,22 @@ from keyboards.common_keyboards import (
     get_on_start_kb,
 )
 
+router = Router(name=__name__)
 
-@telegram_router.message(Command("id"))
+
+@router.message(Command("id"))
 async def cmd_id(message: Message) -> None:
     await message.answer(f"Your ID: {message.from_user.id}")
 
 
-@telegram_router.message(Command("calc"))
+@router.message(Command("calc"))
 async def calc_assets(message: Message) -> None:
     await message.answer(
         f"We are ready to create assets calculation for user {message.from_user.id}"
     )
 
 
-@telegram_router.message(CommandStart())
+@router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
     async with get_session() as session:
         new_user = schemas.User(
@@ -51,7 +55,7 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
         db_user = await crud.Users.get_user(session, user_id=new_user.id)
         if db_user is None:
             await crud.Users.create_user(session, new_user)
-    # await state.set_state(Calculation.rates_or_calculation)
+    await state.set_state(Calculation.rates_or_calculation)
     await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
     await message.answer(
         """In the MoneyBot you can get current exchange rate and evaluate your multicurrency assets. Push the appropriate button below. 👇"""
@@ -60,7 +64,7 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
     await message.answer(text="Choose action:", reply_markup=markup)
 
 
-@telegram_router.message(F.text.lower() == "echo")
+@router.message(F.text.lower() == "echo")
 async def echo(message: types.Message) -> None:
     try:
         # await message.send_copy(chat_id=message.chat.id)
@@ -70,7 +74,7 @@ async def echo(message: types.Message) -> None:
         await message.answer("Nice try!")
 
 
-@telegram_router.message(F.text.lower() == "ping")
+@router.message(F.text.lower() == "ping")
 async def ping(message: types.Message) -> None:
     try:
         await message.answer("PONG🏓")
@@ -80,12 +84,13 @@ async def ping(message: types.Message) -> None:
 
 
 # @telegram_router.message(F.text.lower() == "fastapi")
-@telegram_router.message(Command("fastapi"))
+@router.message(Command("fastapi"))
 async def hello_fastapi(message: types.Message) -> None:
     try:
-        response_dict = await root()
-        res = response_dict["message"]
-        await message.answer(res)
+        pass
+        # response_dict = await root()
+        # res = response_dict["message"]
+        # await message.answer(res)
 
         # TEST GET USER
         # async with get_session() as session:
@@ -147,7 +152,7 @@ async def hello_fastapi(message: types.Message) -> None:
         await message.answer("Nice try! But something went wrong...")
 
 
-@telegram_router.message(Command("info", prefix="!/"))
+@router.message(Command("info", prefix="!/"))
 async def handle_info_command(message: types.Message):
     tg_channel_btn = InlineKeyboardButton(
         text="🔉Channel", url="https://t.me/erast_off"
@@ -161,8 +166,8 @@ async def handle_info_command(message: types.Message):
     await message.answer(text="Links to resources:", reply_markup=markup)
 
 
-@telegram_router.message(F.text == ButtonText.WHATS_NEXT)
-@telegram_router.message(Command("help", prefix="!/"))
+@router.message(F.text == ButtonText.WHATS_NEXT)
+@router.message(Command("help", prefix="!/"))
 async def handle_help(message: types.Message):
     text = markdown.text(
         markdown.markdown_decoration.quote("I'm an {echo} bot."),
@@ -185,7 +190,7 @@ async def handle_help(message: types.Message):
     )
 
 
-@telegram_router.message(Command("more", prefix="!/"))
+@router.message(Command("more", prefix="!/"))
 async def handle_more(message: types.Message):
     markup = get_actions_kb()
     await message.answer(

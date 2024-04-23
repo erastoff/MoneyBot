@@ -9,9 +9,13 @@ from loguru import logger
 from settings import Settings, get_settings
 from system import first_run
 
+from handlers import router as handlers_router
+
 cfg: Settings = get_settings()
 
 telegram_router = Router(name="telegram")
+telegram_router.include_router(handlers_router)
+
 dp = Dispatcher()
 
 dp.include_router(telegram_router)
