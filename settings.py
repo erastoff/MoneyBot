@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-__author__ = "erastoff (yury.erastov@gmail.com)"
-
 from functools import lru_cache
 from typing import final
 
@@ -18,7 +16,7 @@ class Settings(BaseSettings):
     debug: bool = config("DEBUG")
     redis_url: str = f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT')}/0"
     bot_token: str = config("HTTP_API")
-    base_webhook_url: str = "https://0cd28175ccf6fb.lhr.life"
+    base_webhook_url: str = "https://c36167fa028ed2.lhr.life"
     webhook_path: str = "/path/"
     telegram_my_token: str = (
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # Additional security token for webhook

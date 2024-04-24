@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
-__author__ = "erastoff (yury.erastov@gmail.com)"
-
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, WebhookInfo
 from loguru import logger
 
+from handlers import router as handlers_router
 from settings import Settings, get_settings
 from system import first_run
-
-from handlers import router as handlers_router
 
 cfg: Settings = get_settings()
 

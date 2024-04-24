@@ -1,4 +1,5 @@
-from sqlalchemy import select, desc
+# -*- coding: utf-8 -*-
+from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import models, schemas
@@ -25,9 +26,8 @@ class Users:
 
     @staticmethod
     async def delete_user(db: AsyncSession, user_id: int):
-        async with db as session:
-            pass
-        # cascade delete calculations and assest
+        """Cascade delete calculations and assets"""
+        pass
 
 
 class Calculations:

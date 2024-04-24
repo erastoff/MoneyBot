@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 from aiogram import F
 from aiogram.types import (
-    KeyboardButton,
-    ReplyKeyboardMarkup,
-    KeyboardButtonPollType,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    KeyboardButton,
+    KeyboardButtonPollType,
+    ReplyKeyboardMarkup,
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 

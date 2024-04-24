@@ -1,18 +1,20 @@
-from aiogram import types, F, Router
+# -*- coding: utf-8 -*-
+from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.utils import markdown
 
 from keyboards.calculation_keyboards import (
-    crypto_or_currency_kb,
+    TICKERS,
+    CalculationKB,
+    add_or_calculate_kb,
     cash_kb,
     choose_currency_kb,
     crypto_kb,
-    add_or_calculate_kb,
+    crypto_or_currency_kb,
 )
 from keyboards.common_keyboards import CommonKB
-from keyboards.calculation_keyboards import CalculationKB, TICKERS
-from orm import schemas, crud
+from orm import crud, schemas
 from orm.database import get_session
 
 from .states import Calculation
@@ -135,10 +137,12 @@ async def currency_amount(message: types.Message, state: FSMContext):
                 sum=amount,
                 calc_id=db_calc.id,
             )
-            db_asset = await crud.Assets.create_asset(session, new_asset)
+            await crud.Assets.create_asset(session, new_asset)  # db_asset =
 
         await message.answer(
-            f"You entered {markdown.hbold(amount)} {markdown.hbold(data.get('currency_for_calculation'))} to add into calculation."
+            f"You entered {markdown.hbold(amount)}\
+ {markdown.hbold(data.get('currency_for_calculation'))}\
+ to add into calculation."
         )
         await state.clear()
 

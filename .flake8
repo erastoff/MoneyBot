@@ -4,4 +4,4 @@ exclude =
 
 ignore = E722,F401,W291
 
-max-line-length = 120
+max-line-length = 90

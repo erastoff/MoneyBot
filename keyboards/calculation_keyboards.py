@@ -1,7 +1,5 @@
-from aiogram.types import (
-    KeyboardButton,
-    ReplyKeyboardMarkup,
-)
+# -*- coding: utf-8 -*-
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 CRYPTO_TICKERS = [
     "BTC",

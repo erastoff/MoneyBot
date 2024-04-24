@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-__author__ = "erastoff (yury.erastov@gmail.com)"
-
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI

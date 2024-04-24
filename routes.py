@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-__author__ = "erastoff (yury.erastov@gmail.com)"
-
 from typing import Annotated
 
 from aiogram import types
