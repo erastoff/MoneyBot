@@ -1,6 +1,5 @@
 from aiogram import types, F, Router
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.utils import markdown
 
@@ -35,6 +34,7 @@ async def choose_crypto_or_cash(message: types.Message, state: FSMContext):
 @router.message(F.text == CalculationKB.crypto_kb_data)
 async def crypto_assets(message: types.Message, state: FSMContext):
     await state.set_state(Calculation.base_currency)
+    await state.update_data(base_currency_type="crypto")
     markup = crypto_kb()
     await message.answer(
         text="Choose crypto base asset for calculation 👇",
@@ -45,6 +45,7 @@ async def crypto_assets(message: types.Message, state: FSMContext):
 @router.message(F.text == CalculationKB.cash_kb_data)
 async def cash_assets(message: types.Message, state: FSMContext):
     await state.set_state(Calculation.base_currency)
+    await state.update_data(base_currency_type="cash")
     markup = cash_kb()
     await message.answer(
         text="Choose cash base asset for calculation 👇",
@@ -55,30 +56,39 @@ async def cash_assets(message: types.Message, state: FSMContext):
 @router.message(Calculation.base_currency)
 async def handle_calculation_base_currency(message: types.Message, state: FSMContext):
     await state.update_data(base_currency=message.text)
-    # await state.set_state(Calculation.base_currency)
     if message.text in TICKERS:
-        # Calculation DB instance creation
+
         async with get_session() as session:
             new_calc = schemas.Calculation(
                 base_currency=message.text, owner_id=message.from_user.id
             )
             await crud.Calculations.create_calculation(session, new_calc)
+
         await message.answer(
             f"You chose {markdown.hbold(message.text)} as base currency. Let's continue!",
             parse_mode=ParseMode.HTML,
         )
         await state.clear()
+        await state.set_state(Calculation.currency_for_calculation)
+        markup = choose_currency_kb()
+        await message.answer(
+            text="Choose currency for calculation 👇",
+            reply_markup=markup,
+        )
     else:
         await message.answer(
-            f"{markdown.hbold(message.text)} is invalid ticker!",
+            f"'{markdown.hbold(message.text)}' is invalid ticker!",
             parse_mode=ParseMode.HTML,
         )
-    await state.set_state(Calculation.currency_for_calculation)
-    markup = choose_currency_kb()
-    await message.answer(
-        text="Choose currency for calculation 👇",
-        reply_markup=markup,
-    )
+
+        data = await state.get_data()
+        base_currency_type = data.get("base_currency_type")
+        markup = cash_kb() if base_currency_type == "cash" else crypto_kb()
+
+        await message.answer(
+            text="Choose base asset for calculation again 👇",
+            reply_markup=markup,
+        )
 
 
 @router.message(Calculation.currency_for_calculation)
@@ -86,17 +96,24 @@ async def choose_currency_for_calculation_first(
     message: types.Message, state: FSMContext
 ):
     await state.update_data(currency_for_calculation=message.text)
-    await message.answer(
-        f"You choose {markdown.hbold(message.text)} to add into calculation."
-    )
-    await message.answer("Input amount 👇")
-    await state.set_state(Calculation.currency_amount)
+    if message.text in TICKERS:
+        await message.answer(
+            f"You chose {markdown.hbold(message.text)} to add into calculation."
+        )
+        await message.answer("Input amount 👇")
+        # await state.clear()
+        await state.set_state(Calculation.currency_amount)
+    else:
+        await message.answer(
+            f"'{markdown.hbold(message.text)}' is invalid ticker!",
+            parse_mode=ParseMode.HTML,
+        )
 
-    # markup = choose_currency_kb()
-    # await message.answer(
-    #     text="What's next:",
-    #     reply_markup=markup,
-    # )
+        markup = choose_currency_kb()
+        await message.answer(
+            text="Choose currency for calculation again 👇",
+            reply_markup=markup,
+        )
 
 
 @router.message(Calculation.currency_amount)
@@ -105,9 +122,9 @@ async def currency_amount(message: types.Message, state: FSMContext):
     data = await state.get_data()
     amount = message.text
 
-    if amount.replace(".", "", 1).isnumeric():
+    if amount.replace(",", ".").replace(".", "", 1).isnumeric():
 
-        amount = float(amount)
+        amount = float(amount.replace(",", "."))
 
         async with get_session() as session:
             db_calc = await crud.Calculations.get_last_user_calculation(
@@ -121,24 +138,24 @@ async def currency_amount(message: types.Message, state: FSMContext):
             db_asset = await crud.Assets.create_asset(session, new_asset)
 
         await message.answer(
-            f"You choose {markdown.hbold(message.text)} to add into calculation."
+            f"You entered {markdown.hbold(amount)} {markdown.hbold(data.get('currency_for_calculation'))} to add into calculation."
         )
         await state.clear()
+
+        await state.set_state(Calculation.add_or_calculate)
+        markup = add_or_calculate_kb()
+        await message.answer(
+            text="Choose next step 👇",
+            reply_markup=markup,
+        )
+
     else:
         await message.answer("Invalid value. Input again 👇")
-
-    await state.set_state(Calculation.add_or_calculate)
-    # await message.answer("Choose next step 👇")
-    markup = add_or_calculate_kb()
-    await message.answer(
-        text="Choose next step 👇",
-        reply_markup=markup,
-    )
+        await state.set_state(Calculation.currency_amount)
 
 
 @router.message(F.text == CalculationKB.add_button)
 async def add_currency_handler(message: types.Message, state: FSMContext):
-    # await state.update_data(add_currency=message.text)
     await state.clear()
     await state.set_state(Calculation.currency_for_calculation)
     markup = choose_currency_kb()
@@ -150,7 +167,6 @@ async def add_currency_handler(message: types.Message, state: FSMContext):
 
 @router.message(F.text == CalculationKB.calculate_button)
 async def calculate_handler(message: types.Message, state: FSMContext):
-    # await state.update_data(add_currency=message.text)
     await state.clear()
 
     async with get_session() as session:
@@ -161,12 +177,12 @@ async def calculate_handler(message: types.Message, state: FSMContext):
         total = float(0)
         for item in assets_list:
             total += float(item.sum)
-        db_calc.total = total  ## TO DO: SET TOTAL IN DB
-    await message.answer(
-        f"You total {markdown.hbold(total)} {markdown.hbold(db_calc.base_currency)}!"
-    )
+        db_calc.total = total
+        session.add(db_calc)
+        await session.commit()
+        await session.refresh(db_calc)
 
-    # await message.answer(
-    #     text="Choose currency for calculation 👇",
-    #     reply_markup=markup,
-    # )
+    await message.answer(
+        f"Your total {markdown.hbold(total)} {markdown.hbold(db_calc.base_currency)}!"
+    )
+    await state.clear()
