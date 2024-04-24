@@ -1,6 +1,6 @@
-# FastAPI & Aiogram Telegram bot start template
+# Development of multi-currency tool for calculating single user balance using FastAPI & Aiogram
 
-This is a basic template for creating a Telegram bot using the [FastAPI](https://github.com/tiangolo/fastapi) framework and the [Aiogram](https://github.com/aiogram/aiogram) library in Python. It's a starting point for building your own Telegram bot with minimal setup.
+This is a Telegram bot `MoneyBot` which is created using the [FastAPI](https://github.com/tiangolo/fastapi) framework and the [Aiogram](https://github.com/aiogram/aiogram) library in Python.
 
 ## Prerequisites
 
@@ -11,7 +11,22 @@ This is a basic template for creating a Telegram bot using the [FastAPI](https:/
 
 #### Description
 
-Setup you own environment variables in settings.py file or in `[prod|dev].env` file. Put your own handlers in handlers directory and import them in __init__.py file. In REDIS saved ppid for checking if bot is running first time or not. But also you cat use it for cache or other purposes.
+Setup project environment using Poetry `pyproject.toml` file.
 
+#### START:
+redis-server<br>
+ssh -R 80:localhost:8000 nokey@localhost.run<br>
+change base_webhook_url<br>
 
+#### ALEMBIC:
+alembic init -t async alembic<br>
+alembic revision --autogenerate -m "Add User model"<br>
+alembic upgrade head<br>
+alembic downgrade 786fec44f021<br>
+alembic downgrade -1<br>
 
+#### POSTGRES CHECK
+docker-compose up -d<br>
+sudo lsof -i :5432<br>
+sudo kill -9 PID<br>
+psql -h localhost -U bot_user -d bot_db -p 5432<br>
