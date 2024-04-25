@@ -4,7 +4,6 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (
-    CallbackQuery,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
@@ -13,8 +12,6 @@ from aiogram.utils import markdown
 from aiogram.utils.markdown import hbold
 from loguru import logger
 
-# from bot import telegram_router, bot
-# from bot import bot
 from handlers.states import Calculation
 from keyboards.common_keyboards import (
     ButtonText,
@@ -24,9 +21,7 @@ from keyboards.common_keyboards import (
 )
 from orm import crud, schemas
 from orm.database import get_session
-
-# from routes import root
-
+from redis_pool import pool
 
 router = Router(name=__name__)
 
@@ -85,6 +80,14 @@ async def ping(message: types.Message) -> None:
 async def hello_fastapi(message: types.Message) -> None:
     try:
         await message.answer("There was fastapi test. But not now...")
+        await message.answer("Now we try to set up key - value into redis storage ...")
+
+        await pool.set("key", "fastapi_command_redis", 60)
+
+        await message.answer("Result ...")
+        value = await pool.get("key")
+        await message.answer(f"{markdown.hbold(value.decode())}")
+
     except Exception as e:
         print(e)
         logger.error(f"Can't send message - {e}")
