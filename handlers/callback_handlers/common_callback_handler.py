@@ -1,8 +1,3 @@
-from aiogram import F, Router
-from aiogram.types import CallbackQuery
-
-from bot import telegram_router
-
 # router = Router(name=__name__)
 
 

@@ -21,7 +21,7 @@ from keyboards.common_keyboards import (
 )
 from orm import crud, schemas
 from orm.database import get_session
-from redis_pool import pool
+from service.redis_pool import pool
 
 router = Router(name=__name__)
 

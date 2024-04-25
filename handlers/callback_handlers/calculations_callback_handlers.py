@@ -1,6 +1,6 @@
 from aiogram import types
 
-from bot import telegram_router
+from service.bot import telegram_router
 
 
 # Создаем обработчик нажатия на кнопку "Info"
