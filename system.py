@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from os import getppid
 
-import redis.asyncio as aredis
+import aioredis
 
 from settings import get_settings
 
@@ -14,7 +14,7 @@ async def first_run() -> bool:
     If ppid is the same - this is not the first run.
     """
     ppid = getppid()
-    redis = await aredis.from_url(cfg.redis_url)
+    redis = await aioredis.from_url(cfg.redis_url)
     save_pid = await redis.get("tg_bot_ppid")
     if save_pid and int(save_pid) == ppid:
         await redis.close()
