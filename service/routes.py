@@ -7,7 +7,7 @@ from loguru import logger
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
-from bot import bot, dp
+from .bot import bot, dp
 from orm import crud
 from orm.database import get_session
 from settings import get_settings
