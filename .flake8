@@ -1,6 +1,6 @@
 [flake8]
 exclude =
-    migrations, venv
+    migrations, venv, alembic
 
 ignore = E722,F401,W291
 
