@@ -31,7 +31,7 @@ class Calculation(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     date = Column(DateTime, server_default=func.now())
     base_currency = Column(String(5))
-    total = Column(Numeric(precision=10, scale=6))
+    total = Column(Numeric(precision=16, scale=6))
 
     owner_id = Column(BigInteger, ForeignKey("users.id"))
     owner = relationship("User", back_populates="calculations")
@@ -44,7 +44,7 @@ class Asset(Base):
 
     id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
     currency = Column(String(5))
-    sum = Column(Numeric(precision=10, scale=6))
+    sum = Column(Numeric(precision=15, scale=6))
 
     calc_id = Column(Integer, ForeignKey("calculations.id"))
     calculation = relationship("Calculation", back_populates="assets")
