@@ -39,11 +39,13 @@ async def handle_calculation_base_currency(message: types.Message, state: FSMCon
             if not response_value:
                 raise KeyError
             await message.answer(
-                f"Current rate for {markdown.hbold(requested_pair)} pair: {markdown.hbold(response_value.decode())}"
+                f"Current rate for {markdown.hbold(requested_pair)} pair:\
+ {markdown.hbold(response_value.decode())}"
             )
         except KeyError:
             await message.answer(
-                f"Unfortunately, there is no {markdown.hbold(requested_pair)} pair on the Binance data"
+                f"Unfortunately, there is no {markdown.hbold(requested_pair)}\
+ pair on the Binance data"
             )
         await state.clear()
     else:
