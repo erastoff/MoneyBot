@@ -123,10 +123,12 @@ async def currency_amount(message: types.Message, state: FSMContext):
     await state.update_data(currency_amount=message.text)
     data = await state.get_data()
     amount = message.text
+    amount = amount.replace(",", ".")
+    amount.replace(".", "", 1)
 
-    if amount.replace(",", ".").replace(".", "", 1).isnumeric():
+    if amount.replace(".", "", 1).isnumeric() and float(amount) < 10**9:
 
-        amount = float(amount.replace(",", "."))
+        amount = float(amount)
 
         async with get_session() as session:
             db_calc = await crud.Calculations.get_last_user_calculation(
@@ -152,9 +154,11 @@ async def currency_amount(message: types.Message, state: FSMContext):
             text="Choose next step 👇",
             reply_markup=markup,
         )
-
     else:
-        await message.answer("Invalid value. Input again 👇")
+        await message.answer(
+            f"Invalid value. You can input valid\
+an{markdown.hbold('float value less than 10^9')}. Input again 👇"
+        )
         await state.set_state(Calculation.currency_amount)
 
 
