@@ -114,5 +114,5 @@ class Assets:
                 asset = await session.get(models.Asset, asset_id)
                 await db.delete(asset)
                 await db.commit()
-            except:
+            except Exception:
                 print("Doesn't exist")  # ??????????????????????????

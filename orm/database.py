@@ -33,7 +33,7 @@ async def get_session():
 
         async with async_session() as session:
             yield session
-    except:
+    except Exception:
         await session.rollback()
         raise
     finally:

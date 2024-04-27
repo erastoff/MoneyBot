@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from aiogram import Bot, Dispatcher, Router, types
+from aiogram import Bot, Dispatcher, Router
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, WebhookInfo
 from loguru import logger

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-from aiogram import F
 from aiogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
     KeyboardButton,
     KeyboardButtonPollType,
     ReplyKeyboardMarkup,

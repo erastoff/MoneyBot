@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from sqlalchemy import (
     BigInteger,
     Column,

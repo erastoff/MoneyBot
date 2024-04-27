@@ -7,7 +7,7 @@ from aiogram.utils import markdown
 from handlers.states import Calculation
 from keyboards.calculation_keyboards import crypto_kb, TICKERS
 from keyboards.common_keyboards import CommonKB
-from service.binance_api import fetch_binance_rates, set_cache_binance_rates
+from service.binance_api import set_cache_binance_rates
 from service.redis_pool import pool
 
 router = Router(name=__name__)
