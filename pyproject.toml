@@ -17,6 +17,7 @@ SQLAlchemy = {extras = ["asyncio"], version = "^2.0.29"}
 asyncpg = "^0.29.0"
 alembic = "^1.13.1"
 aioredis = "^2.0.1"
+python-binance = "^1.0.19"
 
 [tool.poetry.dev-dependencies]
 black = "^24.2.0"
