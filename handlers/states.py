@@ -7,4 +7,5 @@ class Calculation(StatesGroup):
     base_currency = State()
     currency_amount = State()
     currency_for_calculation = State()
+    exchange_rates = State()
     rates_or_calculation = State()
