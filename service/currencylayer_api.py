@@ -4,7 +4,7 @@ import aiohttp
 
 from settings import get_settings
 from service.redis_pool import pool
-from keyboards.calculation_keyboards import CASH_TICKERS
+from keyboards.rates_keyboards import CASH_TICKERS
 
 cfg = get_settings()
 
@@ -41,7 +41,7 @@ async def set_cache_cash_rates():
 async def main():
     await set_cache_cash_rates()
     exchange_rate1 = await pool.get("USDRUB")
-    exchange_rate2 = await pool.get("USDTRY")
+    exchange_rate2 = await pool.get("USDKZT")
     print("USDRUB", float(exchange_rate1), "USDTRY", float(exchange_rate2))
 
 
