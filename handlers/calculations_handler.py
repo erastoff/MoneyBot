@@ -16,6 +16,7 @@ from keyboards.calculation_keyboards import (
 from keyboards.common_keyboards import CommonKB
 from orm import crud, schemas
 from orm.database import get_session
+from service.calculator import get_sum
 
 from .states import Calculation
 
@@ -182,9 +183,17 @@ async def calculate_handler(message: types.Message, state: FSMContext):
             session, owner_id=message.from_user.id
         )
         assets_list = await crud.Assets.get_assets_list(session, calc_id=db_calc.id)
-        total = float(0)
+        # total = float(0)
+        ##############################
+        asset_sum = {}
         for item in assets_list:
-            total += float(item.sum)
+            asset_sum[item.currency] = item.sum
+
+        total = await get_sum(db_calc.base_currency, asset_sum)
+        ##############################
+
+        # total += float(item.sum)
+
         db_calc.total = total
         session.add(db_calc)
         await session.commit()
