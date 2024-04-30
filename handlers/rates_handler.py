@@ -10,9 +10,8 @@ from keyboards.rates_keyboards import (
     crypto_or_currency_kb,
     cash_kb,
     RatesKB,
-    CRYPTO_TICKERS,
-    CASH_TICKERS,
 )
+from keyboards.button_tickers import CRYPTO_TICKERS, CASH_TICKERS
 from keyboards.common_keyboards import CommonKB
 from service.binance_api import set_cache_binance_rates
 from service.currencylayer_api import set_cache_cash_rates

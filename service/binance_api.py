@@ -15,8 +15,8 @@ async def fetch_binance_rates():
     tickers_raw = client.get_all_tickers()
     tickers = {}
     for item in tickers_raw:
-        tickers[item["symbol"]] = item["price"]
-    # print(tickers)
+        if item["symbol"].endswith("USDT") and len(item["symbol"]) < 10:
+            tickers[item["symbol"]] = item["price"]
     return tickers
 
 
@@ -31,6 +31,9 @@ async def set_cache_binance_rates():
 
 async def main():
     await set_cache_binance_rates()
+    # await fetch_binance_rates()
+    # client = Client(cfg.binance_api_key, cfg.binance_secret_key)
+    # all_tickers = client.get_all_tickers()
 
 
 if __name__ == "__main__":

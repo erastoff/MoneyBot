@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
-from keyboards.calculation_keyboards import TICKERS
+from keyboards.button_tickers import TICKERS
 from .binance_api import set_cache_binance_rates
 from .bot import bot, dp
 from orm import crud

@@ -4,8 +4,8 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.utils import markdown
 
+from keyboards.button_tickers import TICKERS
 from keyboards.calculation_keyboards import (
-    TICKERS,
     CalculationKB,
     add_or_calculate_kb,
     cash_kb,

@@ -1,23 +1,6 @@
 # -*- coding: utf-8 -*-
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-
-CRYPTO_TICKERS = [
-    "BTC",
-    "ETH",
-    "TWT",
-    "SOL",
-    "TON",
-    "APT",
-]
-CASH_TICKERS = [
-    "USD",
-    "EUR",
-    "RUB",
-    "TRY",
-    "CNY",
-    "KZT",
-]
-TICKERS = CRYPTO_TICKERS + CASH_TICKERS
+from keyboards.button_tickers import CRYPTO_TICKERS, CASH_TICKERS, TICKERS
 
 
 class CalculationKB:
