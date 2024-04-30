@@ -177,28 +177,19 @@ async def add_currency_handler(message: types.Message, state: FSMContext):
 @router.message(F.text == CalculationKB.calculate_button)
 async def calculate_handler(message: types.Message, state: FSMContext):
     await state.clear()
-
     async with get_session() as session:
         db_calc = await crud.Calculations.get_last_user_calculation(
             session, owner_id=message.from_user.id
         )
         assets_list = await crud.Assets.get_assets_list(session, calc_id=db_calc.id)
-        # total = float(0)
-        ##############################
-        asset_sum = {}
+        asset_sum = []
         for item in assets_list:
-            asset_sum[item.currency] = item.sum
-
+            asset_sum.append((item.currency, item.sum))
         total = await get_sum(db_calc.base_currency, asset_sum)
-        ##############################
-
-        # total += float(item.sum)
-
         db_calc.total = total
         session.add(db_calc)
         await session.commit()
         await session.refresh(db_calc)
-
     await message.answer(
         f"Your total {markdown.hbold(total)} {markdown.hbold(db_calc.base_currency)}!"
     )

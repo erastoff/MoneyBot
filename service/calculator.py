@@ -18,12 +18,12 @@ async def base_currency_rate(base_currency: str) -> float:
         return cur_base_rate
 
 
-async def get_sum(base_currency: str, asset_sum: dict) -> float:
+async def get_sum(base_currency: str, asset_sum: list) -> float:
     await set_cache_binance_rates()
     await set_cache_cash_rates()
     total_sum = float(0)
     base_cur_rate = await base_currency_rate(base_currency)
-    for asset, amount in asset_sum.items():
+    for asset, amount in asset_sum:
         if asset == base_currency:
             total_sum += float(amount)
         elif asset == "USD":
