@@ -11,7 +11,6 @@ from keyboards.calculation_keyboards import (
     cash_kb,
     choose_currency_kb,
     crypto_kb,
-    crypto_or_currency_kb,
 )
 from keyboards.common_keyboards import CommonKB
 from orm import crud, schemas
@@ -25,33 +24,11 @@ router = Router(name=__name__)
 
 @router.message(F.text == CommonKB.calculation_kb_data)
 async def choose_crypto_or_cash(message: types.Message, state: FSMContext):
+    await state.set_state(Calculation.base_currency)
     await state.update_data(rates_or_calculation=message.text)
-    markup = crypto_or_currency_kb()
+    markup = choose_currency_kb()
     await message.answer(
         text="Choose crypto or cash base asset 👇",
-        reply_markup=markup,
-    )
-    await state.clear()
-
-
-@router.message(F.text == CalculationKB.crypto_kb_data)
-async def crypto_assets(message: types.Message, state: FSMContext):
-    await state.set_state(Calculation.base_currency)
-    await state.update_data(base_currency_type="crypto")
-    markup = crypto_kb()
-    await message.answer(
-        text="Choose crypto base asset for calculation 👇",
-        reply_markup=markup,
-    )
-
-
-@router.message(F.text == CalculationKB.cash_kb_data)
-async def cash_assets(message: types.Message, state: FSMContext):
-    await state.set_state(Calculation.base_currency)
-    await state.update_data(base_currency_type="cash")
-    markup = cash_kb()
-    await message.answer(
-        text="Choose cash base asset for calculation 👇",
         reply_markup=markup,
     )
 
