@@ -10,12 +10,12 @@ async def base_currency_rate(base_currency: str) -> float:
         return 1
     if base_currency in CRYPTO_TICKERS:
         cur_base_rate = await pool.get(base_currency + "USDT")
-        cur_base_rate = float(cur_base_rate)
+        cur_base_rate = 1 / float(cur_base_rate)
         return cur_base_rate
     if base_currency in CASH_TICKERS:
         cur_base_rate = await pool.get("USD" + base_currency)
         cur_base_rate = float(cur_base_rate)
-        return 1 / cur_base_rate
+        return cur_base_rate
 
 
 async def get_sum(base_currency: str, asset_sum: dict) -> float:
@@ -28,19 +28,15 @@ async def get_sum(base_currency: str, asset_sum: dict) -> float:
             total_sum += float(amount)
         elif asset == "USD":
             cur_asset_rate = 1
-
-            cur_asset_rate_base = float(cur_asset_rate) / float(base_cur_rate)
+            cur_asset_rate_base = float(base_cur_rate) / float(cur_asset_rate)
             total_sum += cur_asset_rate_base * float(amount)
         elif asset in CRYPTO_TICKERS:
-            # await set_cache_binance_rates()
             cur_asset_rate = await pool.get(asset + "USDT")
-            # base_cur_rate = await base_currency_rate(base_currency)
-            cur_asset_rate_base = float(cur_asset_rate) / float(base_cur_rate)
-            total_sum += cur_asset_rate_base * float(amount)
+            cur_asset_rate = 1 / float(cur_asset_rate)
+            cur_asset_rate_base = float(base_cur_rate) / float(cur_asset_rate)
+            total_sum += float(amount) * cur_asset_rate_base
         elif asset in CASH_TICKERS:
-            # await set_cache_cash_rates()
             cur_asset_rate = await pool.get("USD" + asset)
-            # base_cur_rate = await base_currency_rate(base_currency)
-            cur_asset_rate_base = float(cur_asset_rate) / float(base_cur_rate)
+            cur_asset_rate_base = float(base_cur_rate) / float(cur_asset_rate)
             total_sum += cur_asset_rate_base * float(amount)
     return total_sum
