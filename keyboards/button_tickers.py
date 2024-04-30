@@ -4,8 +4,8 @@ CRYPTO_TICKERS = [
     "ETH",
     "TWT",
     "SOL",
-    "TON",
-    "APT",
+    "BNB",
+    "XRP",
 ]
 CASH_TICKERS = [
     "USD",
