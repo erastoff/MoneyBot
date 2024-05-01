@@ -7,12 +7,9 @@ class Calculation(StatesGroup):
     base_currency = State()
     currency_amount = State()
     currency_for_calculation = State()
-    # exchange_asset = State()
-    # exchange_rates = State()
     rates_or_calculation = State()
 
 
 class Rates(StatesGroup):
-    exchange_asset_cash = State()
-    exchange_asset_crypto = State()
+    exchange_asset = State()
     rates_or_calculation = State()
