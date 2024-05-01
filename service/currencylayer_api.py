@@ -21,7 +21,6 @@ async def fetch_exchange_rates():
         async with session.get(url, params=params) as response:
             if response.status == 200:
                 data = await response.json()
-                print(data)
                 return data
             else:
                 print("Error encountered fetching the rates:", response.status)

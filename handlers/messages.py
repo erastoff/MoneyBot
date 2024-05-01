@@ -28,14 +28,7 @@ router = Router(name=__name__)
 
 @router.message(Command("id"))
 async def cmd_id(message: Message) -> None:
-    await message.answer(f"Your ID: {message.from_user.id}")
-
-
-@router.message(Command("calc"))
-async def calc_assets(message: Message) -> None:
-    await message.answer(
-        f"We are ready to create assets calculation for user {message.from_user.id}"
-    )
+    await message.answer(f"🆔 Your ID: {message.from_user.id}")
 
 
 @router.message(CommandStart())
@@ -48,14 +41,25 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
         if db_user is None:
             await crud.Users.create_user(session, new_user)
     await state.set_state(Calculation.rates_or_calculation)
-    await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
+    await message.answer(f"🖖🏼 Hello, {hbold(message.from_user.full_name)}!")
     await message.answer(
-        """In the MoneyBot you can get current exchange rate\
- and evaluate your multicurrency assets.\
- Push the appropriate button below. 👇"""
+        """✅ In the MoneyBot you can get current exchange rate\
+ and evaluate your multicurrency assets."""
     )
     markup = get_on_start_kb()
-    await message.answer(text="Choose action:", reply_markup=markup)
+    await message.answer(
+        text="👇 Push the appropriate button below.", reply_markup=markup
+    )
+
+
+@router.message(Command("money"))
+async def calc_assets(message: Message, state: FSMContext) -> None:
+    await state.set_state(Calculation.rates_or_calculation)
+    markup = get_on_start_kb()
+    await message.answer(
+        text="👇 Push the appropriate button below to get rates or create new calculation.",
+        reply_markup=markup,
+    )
 
 
 @router.message(F.text.lower() == "echo")

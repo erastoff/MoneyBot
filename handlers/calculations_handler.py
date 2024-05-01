@@ -26,7 +26,7 @@ async def choose_crypto_or_cash(message: types.Message, state: FSMContext):
     await state.update_data(rates_or_calculation=message.text)
     markup = choose_currency_kb()
     await message.answer(
-        text="Choose crypto or cash base asset 👇",
+        text="👇 Choose crypto or cash base asset.",
         reply_markup=markup,
     )
 
@@ -44,24 +44,24 @@ async def handle_calculation_base_currency(message: types.Message, state: FSMCon
             await crud.Calculations.create_calculation(session, new_calc)
 
         await message.answer(
-            f"You chose {markdown.hbold(choice)} as base currency. Let's continue!",
+            f"💲 You chose {markdown.hbold(choice)} as base currency. Let's continue!",
             parse_mode=ParseMode.HTML,
         )
         await state.clear()
         await state.set_state(Calculation.currency_for_calculation)
         markup = choose_currency_kb()
         await message.answer(
-            text="Choose currency for calculation 👇",
+            text="👇 Choose or enter currency for calculation.",
             reply_markup=markup,
         )
     else:
         await message.answer(
-            f"'{markdown.hbold(message.text)}' is invalid ticker!",
+            f"🙈 '{markdown.hbold(message.text)}' is invalid ticker!",
             parse_mode=ParseMode.HTML,
         )
         markup = choose_currency_kb()
         await message.answer(
-            text="Choose base asset for calculation again 👇",
+            text="👇 Choose base asset for calculation again.",
             reply_markup=markup,
         )
 
@@ -75,18 +75,18 @@ async def choose_currency_for_calculation_first(
     ticker_flag = await check_ticker(choice)
     if choice in TICKERS or ticker_flag:
         await message.answer(
-            f"You chose {markdown.hbold(choice)} to add into calculation."
+            f"💲 You chose {markdown.hbold(choice)} to add into calculation."
         )
-        await message.answer("Input amount 👇")
+        await message.answer("👇 Input amount.")
         await state.set_state(Calculation.currency_amount)
     else:
         await message.answer(
-            f"'{markdown.hbold(message.text)}' is invalid ticker!",
+            f"🙈 '{markdown.hbold(message.text)}' is invalid ticker!",
             parse_mode=ParseMode.HTML,
         )
         markup = choose_currency_kb()
         await message.answer(
-            text="Choose currency for calculation again 👇",
+            text="👇 Choose or enter currency for calculation again.",
             reply_markup=markup,
         )
 
@@ -114,7 +114,7 @@ async def currency_amount(message: types.Message, state: FSMContext):
             await crud.Assets.create_asset(session, new_asset)  # db_asset =
 
         await message.answer(
-            f"You entered {markdown.hbold(amount)} {markdown.hbold(data.get('currency_for_calculation'))}\
+            f"➕ You entered {markdown.hbold(amount)} {markdown.hbold(data.get('currency_for_calculation'))}\
  to add into calculation."
         )
         await state.clear()
@@ -122,12 +122,12 @@ async def currency_amount(message: types.Message, state: FSMContext):
         await state.set_state(Calculation.add_or_calculate)
         markup = add_or_calculate_kb()
         await message.answer(
-            text="Choose next step 👇",
+            text="👇 Choose next step.",
             reply_markup=markup,
         )
     else:
         await message.answer(
-            f"Invalid value. You can input {markdown.hbold('float value less than 10^9')}. Input again 👇"
+            f"🙈 Invalid value. You can input {markdown.hbold('float value less than 10^9')}.\n👇 Input again."
         )
         await state.set_state(Calculation.currency_amount)
 
@@ -138,7 +138,7 @@ async def add_currency_handler(message: types.Message, state: FSMContext):
     await state.set_state(Calculation.currency_for_calculation)
     markup = choose_currency_kb()
     await message.answer(
-        text="Choose currency for calculation 👇",
+        text="👇 Choose currency for calculation.",
         reply_markup=markup,
     )
 
@@ -161,8 +161,11 @@ async def calculate_handler(message: types.Message, state: FSMContext):
         await session.commit()
         await session.refresh(db_calc)
     await message.answer(
-        f"Your total budget in base currency is:\n{markdown.hbold(round(total, 6))}\
+        f"💰 Your total budget in base currency is:\n{markdown.hbold('{0:,}'.format(round(total, 6)).replace(',', ' '))}\
  {markdown.hbold(db_calc.base_currency)}!"
+    )
+    await message.answer(
+        f"↩️ Use command {markdown.text('/money')} to return to start menu."
     )
     await state.clear()
 
@@ -173,6 +176,6 @@ async def random_add_or_calculate_text_handler(
 ):
     markup = add_or_calculate_kb()
     await message.answer(
-        text="Choose next step, please 🙏",
+        text="🙏 Choose next step, please.",
         reply_markup=markup,
     )

@@ -11,5 +11,6 @@ class Calculation(StatesGroup):
 
 
 class Rates(StatesGroup):
+    crypto_or_cash = State()
     exchange_asset = State()
     rates_or_calculation = State()
