@@ -8,14 +8,12 @@ from keyboards.button_tickers import TICKERS
 from keyboards.calculation_keyboards import (
     CalculationKB,
     add_or_calculate_kb,
-    cash_kb,
     choose_currency_kb,
-    crypto_kb,
 )
 from keyboards.common_keyboards import CommonKB
 from orm import crud, schemas
 from orm.database import get_session
-from service.calculator import get_sum
+from service.calculator import get_sum, check_ticker
 
 from .states import Calculation
 
@@ -60,11 +58,7 @@ async def handle_calculation_base_currency(message: types.Message, state: FSMCon
             f"'{markdown.hbold(message.text)}' is invalid ticker!",
             parse_mode=ParseMode.HTML,
         )
-
-        data = await state.get_data()
-        base_currency_type = data.get("base_currency_type")
-        markup = cash_kb() if base_currency_type == "cash" else crypto_kb()
-
+        markup = choose_currency_kb()
         await message.answer(
             text="Choose base asset for calculation again 👇",
             reply_markup=markup,
@@ -75,10 +69,12 @@ async def handle_calculation_base_currency(message: types.Message, state: FSMCon
 async def choose_currency_for_calculation_first(
     message: types.Message, state: FSMContext
 ):
-    await state.update_data(currency_for_calculation=message.text)
-    if message.text in TICKERS:
+    choice = message.text.upper()
+    await state.update_data(currency_for_calculation=choice)
+    ticker_flag = await check_ticker(choice)
+    if choice in TICKERS or ticker_flag:
         await message.answer(
-            f"You chose {markdown.hbold(message.text)} to add into calculation."
+            f"You chose {markdown.hbold(choice)} to add into calculation."
         )
         await message.answer("Input amount 👇")
         # await state.clear()
@@ -88,7 +84,6 @@ async def choose_currency_for_calculation_first(
             f"'{markdown.hbold(message.text)}' is invalid ticker!",
             parse_mode=ParseMode.HTML,
         )
-
         markup = choose_currency_kb()
         await message.answer(
             text="Choose currency for calculation again 👇",
@@ -162,6 +157,7 @@ async def calculate_handler(message: types.Message, state: FSMContext):
         asset_sum = []
         for item in assets_list:
             asset_sum.append((item.currency, item.sum))
+        print(asset_sum)
         total = await get_sum(db_calc.base_currency, asset_sum)
         db_calc.total = total
         session.add(db_calc)

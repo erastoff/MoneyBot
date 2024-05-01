@@ -24,19 +24,30 @@ async def get_sum(base_currency: str, asset_sum: list) -> float:
     total_sum = float(0)
     base_cur_rate = await base_currency_rate(base_currency)
     for asset, amount in asset_sum:
+        asset_flag = await check_ticker(asset)
         if asset == base_currency:
             total_sum += float(amount)
         elif asset == "USD":
             cur_asset_rate = 1
             cur_asset_rate_base = float(base_cur_rate) / float(cur_asset_rate)
             total_sum += cur_asset_rate_base * float(amount)
-        elif asset in CRYPTO_TICKERS:
+        elif asset_flag == "crypto":
             cur_asset_rate = await pool.get(asset + "USDT")
             cur_asset_rate = 1 / float(cur_asset_rate)
             cur_asset_rate_base = float(base_cur_rate) / float(cur_asset_rate)
             total_sum += float(amount) * cur_asset_rate_base
-        elif asset in CASH_TICKERS:
+        elif asset_flag == "cash":
             cur_asset_rate = await pool.get("USD" + asset)
             cur_asset_rate_base = float(base_cur_rate) / float(cur_asset_rate)
             total_sum += cur_asset_rate_base * float(amount)
     return total_sum
+
+
+async def check_ticker(message_text: str):
+    await set_cache_binance_rates()
+    if await pool.get(message_text + "USDT"):
+        return "crypto"
+    await set_cache_cash_rates()
+    if await pool.get("USD" + message_text):
+        return "cash"
+    return None
