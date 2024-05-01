@@ -2,4 +2,4 @@
 exclude =
     migrations, venv, alembic
 
-max-line-length = 90
+max-line-length = 120
