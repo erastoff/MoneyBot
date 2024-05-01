@@ -70,16 +70,15 @@ async def handle_crypto_exchange_rate(message: types.Message, state: FSMContext)
         requested_pair = message.text + "USDT"
         try:
             response_value = await pool.get(requested_pair)
+            response_value = round(float(response_value.decode()), 6)
             if not response_value:
                 raise KeyError
             await message.answer(
-                f"Current rate for {markdown.hbold(requested_pair)} pair:\
- {markdown.hbold(response_value.decode())}"
+                f"Current rate for {markdown.hbold(requested_pair)} pair: {markdown.hbold(response_value)}"
             )
         except KeyError:
             await message.answer(
-                f"Unfortunately, there is no {markdown.hbold(requested_pair)}\
- pair on the Binance data"
+                f"Unfortunately, there is no {markdown.hbold(requested_pair)} pair on the Binance data"
             )
         await state.clear()
     else:
@@ -106,16 +105,15 @@ async def handle_cash_exchange_rate(message: types.Message, state: FSMContext):
         print("CASH PAIR: ", requested_pair)
         try:
             response_value = await pool.get(requested_pair)
+            response_value = round(float(response_value.decode()), 6)
             if not response_value:
                 raise KeyError
             await message.answer(
-                f"Current rate for {markdown.hbold(requested_pair)} pair:\
-        {markdown.hbold(response_value.decode())}"
+                f"Current rate for {markdown.hbold(requested_pair)} pair: {markdown.hbold(response_value)}"
             )
         except KeyError:
             await message.answer(
-                f"Unfortunately, there is no {markdown.hbold(requested_pair)}\
-        pair on the CurrencyLayer data"
+                f"Unfortunately, there is no {markdown.hbold(requested_pair)} pair on the CurrencyLayer data"
             )
         await state.clear()
     else:

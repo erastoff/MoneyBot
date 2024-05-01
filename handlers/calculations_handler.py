@@ -77,7 +77,6 @@ async def choose_currency_for_calculation_first(
             f"You chose {markdown.hbold(choice)} to add into calculation."
         )
         await message.answer("Input amount 👇")
-        # await state.clear()
         await state.set_state(Calculation.currency_amount)
     else:
         await message.answer(
@@ -100,7 +99,6 @@ async def currency_amount(message: types.Message, state: FSMContext):
     amount.replace(".", "", 1)
 
     if amount.replace(".", "", 1).isnumeric() and float(amount) < 10**9:
-
         amount = float(amount)
 
         async with get_session() as session:
@@ -164,6 +162,6 @@ async def calculate_handler(message: types.Message, state: FSMContext):
         await session.commit()
         await session.refresh(db_calc)
     await message.answer(
-        f"Your total {markdown.hbold(total)} {markdown.hbold(db_calc.base_currency)}!"
+        f"Your total {markdown.hbold(round(total, 6))} {markdown.hbold(db_calc.base_currency)}!"
     )
     await state.clear()
