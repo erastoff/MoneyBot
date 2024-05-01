@@ -11,9 +11,9 @@ from keyboards.rates_keyboards import (
     cash_kb,
     RatesKB,
 )
-from keyboards.button_tickers import CRYPTO_TICKERS, CASH_TICKERS
 from keyboards.common_keyboards import CommonKB
 from service.binance_api import set_cache_binance_rates
+from service.calculator import check_ticker
 from service.currencylayer_api import set_cache_cash_rates
 from service.redis_pool import pool
 
@@ -37,7 +37,7 @@ async def choose_crypto_or_cash(message: types.Message, state: FSMContext):
 
 @router.message(F.text == RatesKB.crypto_kb_data)
 async def crypto_assets(message: types.Message, state: FSMContext):
-    await state.set_state(Rates.exchange_asset_crypto)
+    await state.set_state(Rates.exchange_asset)
     await state.update_data(exchange_asset_type="crypto")
     markup = crypto_kb()
     await message.answer(
@@ -49,7 +49,7 @@ async def crypto_assets(message: types.Message, state: FSMContext):
 
 @router.message(F.text == RatesKB.cash_kb_data)
 async def cash_assets(message: types.Message, state: FSMContext):
-    await state.set_state(Rates.exchange_asset_cash)
+    await state.set_state(Rates.exchange_asset)
     await state.update_data(exchange_asset_type="cash")
     markup = cash_kb()
     await message.answer(
@@ -59,15 +59,23 @@ async def cash_assets(message: types.Message, state: FSMContext):
     await set_cache_cash_rates()
 
 
-@router.message(Rates.exchange_asset_crypto)
-async def handle_crypto_exchange_rate(message: types.Message, state: FSMContext):
-    await state.update_data(exchange_rates=message.text)
-    if message.text in CRYPTO_TICKERS:
+@router.message(Rates.exchange_asset)
+async def handle_exchange_rate(message: types.Message, state: FSMContext):
+
+    choice = message.text.upper()
+    await state.update_data(exchange_rates=choice)
+    ticker_flag = await check_ticker(choice)
+    if ticker_flag or choice == "USD":
         await message.answer(
-            f"You chose {markdown.hbold(message.text)}!",
+            f"You chose {markdown.hbold(choice)}!",
             parse_mode=ParseMode.HTML,
         )
-        requested_pair = message.text + "USDT"
+        if ticker_flag == "cash":
+            requested_pair = "USD" + choice
+        elif ticker_flag == "crypto":
+            requested_pair = choice + "USDT"
+        else:
+            requested_pair = "USDRUB"
         try:
             response_value = await pool.get(requested_pair)
             response_value = round(float(response_value.decode()), 6)
@@ -79,41 +87,6 @@ async def handle_crypto_exchange_rate(message: types.Message, state: FSMContext)
         except KeyError:
             await message.answer(
                 f"Unfortunately, there is no {markdown.hbold(requested_pair)} pair on the Binance data"
-            )
-        await state.clear()
-    else:
-        await message.answer(
-            f"'{markdown.hbold(message.text)}' is invalid ticker!",
-            parse_mode=ParseMode.HTML,
-        )
-        markup = crypto_kb()
-        await message.answer(
-            text="Choose crypto asset to get exchange rate again 👇",
-            reply_markup=markup,
-        )
-
-
-@router.message(Rates.exchange_asset_cash)
-async def handle_cash_exchange_rate(message: types.Message, state: FSMContext):
-    await state.update_data(exchange_rates=message.text)
-    if message.text in CASH_TICKERS:
-        await message.answer(
-            f"You chose {markdown.hbold(message.text)}!",
-            parse_mode=ParseMode.HTML,
-        )
-        requested_pair = "USD" + message.text
-        print("CASH PAIR: ", requested_pair)
-        try:
-            response_value = await pool.get(requested_pair)
-            response_value = round(float(response_value.decode()), 6)
-            if not response_value:
-                raise KeyError
-            await message.answer(
-                f"Current rate for {markdown.hbold(requested_pair)} pair: {markdown.hbold(response_value)}"
-            )
-        except KeyError:
-            await message.answer(
-                f"Unfortunately, there is no {markdown.hbold(requested_pair)} pair on the CurrencyLayer data"
             )
         await state.clear()
     else:
