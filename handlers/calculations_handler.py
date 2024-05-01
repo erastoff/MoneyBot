@@ -114,8 +114,7 @@ async def currency_amount(message: types.Message, state: FSMContext):
             await crud.Assets.create_asset(session, new_asset)  # db_asset =
 
         await message.answer(
-            f"You entered {markdown.hbold(amount)}\
- {markdown.hbold(data.get('currency_for_calculation'))}\
+            f"You entered {markdown.hbold(amount)} {markdown.hbold(data.get('currency_for_calculation'))}\
  to add into calculation."
         )
         await state.clear()
@@ -128,8 +127,7 @@ async def currency_amount(message: types.Message, state: FSMContext):
         )
     else:
         await message.answer(
-            f"Invalid value. You can input valid\
-an{markdown.hbold('float value less than 10^9')}. Input again 👇"
+            f"Invalid value. You can input {markdown.hbold('float value less than 10^9')}. Input again 👇"
         )
         await state.set_state(Calculation.currency_amount)
 
@@ -163,6 +161,7 @@ async def calculate_handler(message: types.Message, state: FSMContext):
         await session.commit()
         await session.refresh(db_calc)
     await message.answer(
-        f"Your total {markdown.hbold(round(total, 6))} {markdown.hbold(db_calc.base_currency)}!"
+        f"Your total budget in base currency is:\n{markdown.hbold(round(total, 6))}\
+ {markdown.hbold(db_calc.base_currency)}!"
     )
     await state.clear()

@@ -82,7 +82,7 @@ async def handle_exchange_rate(message: types.Message, state: FSMContext):
             if not response_value:
                 raise KeyError
             await message.answer(
-                f"Current rate for {markdown.hbold(requested_pair)} pair: {markdown.hbold(response_value)}"
+                f"Current rate for {markdown.hbold(requested_pair)} pair:\n{markdown.hbold(response_value)}"
             )
         except KeyError:
             await message.answer(
