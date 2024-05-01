@@ -165,3 +165,14 @@ async def calculate_handler(message: types.Message, state: FSMContext):
  {markdown.hbold(db_calc.base_currency)}!"
     )
     await state.clear()
+
+
+@router.message(Calculation.add_or_calculate)
+async def random_add_or_calculate_text_handler(
+    message: types.Message, state: FSMContext
+):
+    markup = add_or_calculate_kb()
+    await message.answer(
+        text="Choose next step, please 🙏",
+        reply_markup=markup,
+    )
