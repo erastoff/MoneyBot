@@ -33,17 +33,18 @@ async def choose_crypto_or_cash(message: types.Message, state: FSMContext):
 
 @router.message(Calculation.base_currency)
 async def handle_calculation_base_currency(message: types.Message, state: FSMContext):
-    await state.update_data(base_currency=message.text)
-    if message.text in TICKERS:
+    choice = message.text.upper()
+    await state.update_data(base_currency=choice)
+    if choice in TICKERS:
 
         async with get_session() as session:
             new_calc = schemas.Calculation(
-                base_currency=message.text, owner_id=message.from_user.id
+                base_currency=choice, owner_id=message.from_user.id
             )
             await crud.Calculations.create_calculation(session, new_calc)
 
         await message.answer(
-            f"You chose {markdown.hbold(message.text)} as base currency. Let's continue!",
+            f"You chose {markdown.hbold(choice)} as base currency. Let's continue!",
             parse_mode=ParseMode.HTML,
         )
         await state.clear()
