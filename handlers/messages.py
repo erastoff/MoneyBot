@@ -33,6 +33,7 @@ async def cmd_id(message: Message) -> None:
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
+    await state.clear()
     async with get_session() as session:
         new_user = schemas.User(
             id=message.from_user.id, name=message.from_user.full_name

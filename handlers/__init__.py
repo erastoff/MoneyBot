@@ -6,4 +6,4 @@ from .messages import router as messages_router
 from .rates_handler import router as rates_router
 
 router = Router(name="handlers")
-router.include_routers(calculations_handler_router, messages_router, rates_router)
+router.include_routers(messages_router, calculations_handler_router, rates_router)
