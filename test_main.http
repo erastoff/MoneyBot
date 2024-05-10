@@ -1,11 +1,11 @@
-# Test your FastAPI endpoints
+# Test FastAPI endpoints
 
-GET http://127.0.0.1:8000/
+GET https://erastov-store.ru:8443/rates/BTCUSDT
 Accept: application/json
 
 ###
 
-GET http://127.0.0.1:8000/hello/User
+GET https://erastov-store.ru:8443/users/<tg_id>
 Accept: application/json
 
 ###
