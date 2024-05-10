@@ -140,22 +140,3 @@ async def handle_more(message: types.Message):
         text="Choose action:",
         reply_markup=markup,
     )
-
-
-# @telegram_router.callback_query(F.data == CallBacks.exchange_cb_data)
-# async def exchange_cb_handle(callback_query: CallbackQuery):
-#     # if callback_query.data == CallBacks.exchange_cb_data:
-#     print(CallBacks.exchange_cb_data)
-#     await callback_query.answer()
-#     # await callback_query.answer(text="/fastapi")
-#     await bot.send_message(callback_query.from_user.id, "/fastapi")
-#     # elif callback_query.data == CallBacks.calculation_cb_data:
-#     #     await callback_query.message.answer("/choose_currency")
-#
-#
-# @telegram_router.callback_query(F.data == CallBacks.calculation_cb_data)
-# async def calculation_cb_handle(callback_query: CallbackQuery):
-#     print(CallBacks.calculation_cb_data)
-#     await callback_query.answer()
-#     # await callback_query.answer(text="/choose_currency")
-#     await bot.send_message(callback_query.from_user.id, "/choose_currency")
