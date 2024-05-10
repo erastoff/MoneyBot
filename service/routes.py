@@ -9,11 +9,12 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
 from keyboards.button_tickers import TICKERS
-from .binance_api import set_cache_binance_rates
-from .bot import bot, dp
 from orm import crud
 from orm.database import get_session
 from settings import get_settings
+
+from .binance_api import set_cache_binance_rates
+from .bot import bot, dp
 from .redis_pool import pool
 
 cfg = get_settings()

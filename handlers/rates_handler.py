@@ -1,22 +1,16 @@
 # -*- coding: utf-8 -*-
-from aiogram import Router, F, types
+from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.utils import markdown
 
 from handlers.states import Rates
-from keyboards.rates_keyboards import (
-    crypto_kb,
-    crypto_or_currency_kb,
-    cash_kb,
-    RatesKB,
-)
 from keyboards.common_keyboards import CommonKB
+from keyboards.rates_keyboards import RatesKB, cash_kb, crypto_kb, crypto_or_currency_kb
 from service.binance_api import set_cache_binance_rates
 from service.calculator import check_ticker
 from service.currencylayer_api import set_cache_cash_rates
 from service.redis_pool import pool
-
 from settings import Settings, get_settings
 
 cfg: Settings = get_settings()

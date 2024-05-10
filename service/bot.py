@@ -6,6 +6,7 @@ from loguru import logger
 
 from handlers import router as handlers_router
 from settings import Settings, get_settings
+
 from .system import first_run
 
 cfg: Settings = get_settings()

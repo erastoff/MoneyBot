@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-from keyboards.button_tickers import CRYPTO_TICKERS, CASH_TICKERS
+
+from keyboards.button_tickers import CASH_TICKERS, CRYPTO_TICKERS
 
 
 class RatesKB:

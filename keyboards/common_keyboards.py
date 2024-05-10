@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-from aiogram.types import (
-    KeyboardButton,
-    KeyboardButtonPollType,
-    ReplyKeyboardMarkup,
-)
+from aiogram.types import KeyboardButton, KeyboardButtonPollType, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
@@ -19,8 +15,8 @@ class ButtonText:
 
 
 def get_on_start_kb() -> ReplyKeyboardMarkup:
-    row1 = [KeyboardButton(text=CommonKB.exchange_kb_data)]
-    row2 = [KeyboardButton(text=CommonKB.calculation_kb_data)]
+    row1 = [KeyboardButton(text=CommonKB.calculation_kb_data)]
+    row2 = [KeyboardButton(text=CommonKB.exchange_kb_data)]
     buttons_rows = [row1, row2]
     markup = ReplyKeyboardMarkup(
         keyboard=buttons_rows, resize_keyboard=True, one_time_keyboard=True

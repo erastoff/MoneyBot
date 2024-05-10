@@ -3,9 +3,8 @@ import asyncio
 
 from binance import Client
 
-from settings import get_settings
-
 from service.redis_pool import pool
+from settings import get_settings
 
 cfg = get_settings()
 

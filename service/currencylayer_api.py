@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import asyncio
+
 import aiohttp
 
-from settings import get_settings
 from service.redis_pool import pool
+from settings import get_settings
 
 cfg = get_settings()
 

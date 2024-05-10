@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     debug: bool = config("DEBUG")
     redis_url: str = f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT')}/0"
     bot_token: str = config("HTTP_API")
-    base_webhook_url: str = "https://c36167fa028ed2.lhr.life"
+    base_webhook_url: str = "https://erastov-store.ru:8443"
     webhook_path: str = "/path/"
     telegram_my_token: str = (
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # Additional security token for webhook
@@ -29,6 +29,12 @@ class Settings(BaseSettings):
     db_uri: str = (
         f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     )
+
+    currencylayer_api_key: str = config("CURRENCYLAYER_API_KEY")
+    currencylayer_api_url: str = config("CURRENCYLAYER_API_URL")
+
+    binance_api_key: str = config("BINANCE_API_KEY")
+    binance_secret_key: str = config("BINANCE_SECRET_KEY")
 
 
 @lru_cache()  # get it from memory

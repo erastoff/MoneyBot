@@ -3,11 +3,7 @@ from aiogram import F, Router, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-)
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from aiogram.utils import markdown
 from aiogram.utils.markdown import hbold
 from loguru import logger

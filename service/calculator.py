@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from keyboards.button_tickers import CRYPTO_TICKERS, CASH_TICKERS
-from service.redis_pool import pool
+from keyboards.button_tickers import CASH_TICKERS, CRYPTO_TICKERS
 from service.binance_api import set_cache_binance_rates
 from service.currencylayer_api import set_cache_cash_rates
+from service.redis_pool import pool
 
 
 async def base_currency_rate(base_currency: str) -> float:

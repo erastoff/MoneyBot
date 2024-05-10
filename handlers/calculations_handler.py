@@ -13,7 +13,7 @@ from keyboards.calculation_keyboards import (
 from keyboards.common_keyboards import CommonKB
 from orm import crud, schemas
 from orm.database import get_session
-from service.calculator import get_sum, check_ticker
+from service.calculator import check_ticker, get_sum
 
 from .states import Calculation
 
