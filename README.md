@@ -5,8 +5,8 @@ This is a Telegram bot `MoneyBot` which is created using the [FastAPI](https://g
 ## Prerequisites
 
 - Python 3.10+
-- Aiogram 3.0+
-- FastAPI 0.100+
+- Aiogram 3.1.1
+- FastAPI 0.103.1
 
 #### Description
 
